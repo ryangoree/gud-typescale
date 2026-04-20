@@ -1,0 +1,36 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Commands
+
+```bash
+npm test              # run tests (vitest)
+npm run test:watch    # watch mode
+npm run test:coverage # coverage report
+npm run build         # tsc + tsdown (ESM + CJS)
+npm run build:watch   # watch mode
+npm run typecheck     # type-check without emit
+npm run check         # typecheck + Biome lint
+npm run fix           # Biome auto-fix
+npm run check:package # publint validation
+```
+
+## Architecture
+
+`@gud/design-system` is a library + CLI for generating design system tokens (typographic scales and color palettes), primarily targeting Tailwind CSS v4.
+
+**Library** (`src/lib/`) — dual ESM/CJS via tsdown, exported from `src/lib/index.ts`:
+
+- **typography/** — `typeScale.ts` exports `gudTypeScale()`, `gudFontSize()`, `gudTypeScaleCss()`. Scales use exponential progression: a base size × multiplier^step. `lineHeight.ts` exports `gudLineHeight()` for paired line heights.
+- **colors/** — `colorPaletteGenerator.ts` generates color scales via OKLCH interpolation. `convert.ts`, `parse.ts`, `format.ts`, `types.ts` handle color format conversions (hex, rgb, hsl, oklch, oklab, cmyk).
+- **utils/** — small helpers: `rounder.ts` (rounding factory), `scale.ts` (value range scaling), `pxToRem.ts`, `clamp.ts`.
+
+**CLI** (`src/cli/`) — uses `@gud/cli` framework. `commands/typeScale.ts` generates CSS files with type scale custom properties and Tailwind v4 `@theme` directives. Color palette generation is being integrated into the CLI alongside the existing typography commands.
+
+## Key Details
+
+- ES module package (`"type": "module"`); path alias `#src/*` maps to source root
+- TypeScript strict mode with `noUncheckedIndexedAccess`, `noUnusedLocals/Parameters`
+- Linter/formatter: Biome (not ESLint/Prettier)
+- Versioning: changesets (`npm run release`)
