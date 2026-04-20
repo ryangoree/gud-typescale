@@ -11,12 +11,20 @@ export interface ColorScaleOptions {
   lightnessRange?: [number, number];
   /** Chroma multiplier bell-curve range [min, max]. Default: [0.6, 1.0] */
   chromaRange?: [number, number];
+  /**
+   * The step at which the base color's exact lightness is placed. Steps below it interpolate
+   * toward `lightnessMax`; steps above interpolate toward `lightnessMin`. Defaults to the
+   * numeric midpoint of the steps range (500 in the default 50–950 scale).
+   */
+  anchorStep?: number;
 }
 
 type ComputeStepParams = {
   step: number;
   stepsMin: number;
   stepsMax: number;
+  tAnchor: number;
+  baseL: number;
   baseC: number;
   baseH: number;
   baseAlpha: number;
@@ -28,6 +36,8 @@ function computeStep({
   step,
   stepsMin,
   stepsMax,
+  tAnchor,
+  baseL,
   baseC,
   baseH,
   baseAlpha,
@@ -36,8 +46,12 @@ function computeStep({
 }: ComputeStepParams): string {
   const t = (step - stepsMin) / (stepsMax - stepsMin);
   const [lMin, lMax] = lightnessRange;
+  // Piecewise: interpolate lMax→baseL before the anchor, baseL→lMin after it.
+  const l =
+    t <= tAnchor
+      ? lMax + (baseL - lMax) * (tAnchor > 0 ? t / tAnchor : 1)
+      : baseL + (lMin - baseL) * ((t - tAnchor) / (1 - tAnchor));
   const [cMin, cMax] = chromaRange;
-  const l = lMax - (lMax - lMin) * t;
   const chromaMult = cMin + (cMax - cMin) * Math.sin(Math.PI * t);
   return toHex({ l, c: baseC * chromaMult, h: baseH, alpha: baseAlpha });
 }
@@ -52,9 +66,11 @@ export function generateColorScale(
     lightnessRange = DEFAULT_LIGHTNESS_RANGE,
     chromaRange = DEFAULT_CHROMA_RANGE,
   } = options ?? {};
-  const { c, h, alpha } = toOklch(baseColor);
+  const { l, c, h, alpha } = toOklch(baseColor);
   const stepsMin = Math.min(...steps);
   const stepsMax = Math.max(...steps);
+  const anchorStepValue = options?.anchorStep ?? (stepsMin + stepsMax) / 2;
+  const tAnchor = Math.max(0, Math.min(1, (anchorStepValue - stepsMin) / (stepsMax - stepsMin)));
   return Object.fromEntries(
     steps.map((step) => [
       step,
@@ -62,6 +78,8 @@ export function generateColorScale(
         step,
         stepsMin,
         stepsMax,
+        tAnchor,
+        baseL: l,
         baseC: c,
         baseH: h,
         baseAlpha: alpha,
