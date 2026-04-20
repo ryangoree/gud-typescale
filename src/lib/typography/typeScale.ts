@@ -243,14 +243,14 @@ export function gudTypeScale<
 /**
  * Options for generating CSS for a type scale.
  */
-export interface TypeScaleCSSOptions<T extends TypeScale = TypeScale> {
+export interface TypeScaleCSSOptions {
   /**
    * The type scale to generate CSS for.
    *
    * @default gudTypeScale({ unit: 'rem' })
    * @see {@linkcode gudTypeScale}
    */
-  typeScale?: T;
+  typeScale?: TypeScale;
 
   /**
    * The prefix to use for the CSS classes.
@@ -269,16 +269,14 @@ export interface TypeScaleCSSOptions<T extends TypeScale = TypeScale> {
 /**
  * Generate CSS for a type scale.
  */
-export function gudTypeScaleCss<
-  const T extends TypeScale = TypeScale<DefaultTypeScaleStyle, undefined>,
->(options?: TypeScaleCSSOptions<T>): string {
+export function gudTypeScaleCss(options?: TypeScaleCSSOptions): string {
   const {
     typeScale = gudTypeScale({ unit: 'rem' }),
     prefix = '',
     tailwind = false,
   } = options || {};
 
-  let css = '/* Generated Gud TypeScale */\n';
+  let css = '/* Generated Gud Type Scale */\n';
   css += '\n';
 
   if (tailwind) {
