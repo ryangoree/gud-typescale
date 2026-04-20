@@ -1,6 +1,6 @@
 import assert from 'node:assert';
 import { describe, it } from 'node:test';
-import { gudTypeScale, gudTypeScaleCss, rounder } from '#/lib/index';
+import { gudTypeScale, gudTypeScaleCss, rounder } from '#src/lib/index';
 
 describe('rounder', () => {
   it('rounds correctly', () => {
@@ -40,16 +40,8 @@ describe('gudTypeScale', () => {
     const {
       p: { fontSize: stringFontSize },
     } = gudTypeScale({ unit: 'px' });
-    assert.strictEqual(
-      typeof numberFontSize,
-      'number',
-      'Font size should be a number',
-    );
-    assert.match(
-      stringFontSize,
-      /^\d+(\.\d+)?px$/,
-      'Font size should be a string with px unit',
-    );
+    assert.strictEqual(typeof numberFontSize, 'number', 'Font size should be a number');
+    assert.match(stringFontSize, /^\d+(\.\d+)?px$/, 'Font size should be a string with px unit');
   });
 });
 
@@ -60,22 +52,13 @@ describe('gudTypeScaleCss', () => {
       typeScale: gudTypeScale({ hierarchy }),
     });
     hierarchy.forEach((style) => {
-      assert.ok(
-        css.includes(`--font-size-${style}:`),
-        `Missing font size variable for ${style}`,
-      );
+      assert.ok(css.includes(`--font-size-${style}:`), `Missing font size variable for ${style}`);
       assert.ok(
         css.includes(`--line-height-${style}:`),
         `Missing line height variable for ${style}`,
       );
-      assert.ok(
-        css.includes(`.text-${style} {`),
-        `Missing text class for ${style}`,
-      );
-      assert.ok(
-        css.includes(`.leading-${style} {`),
-        `Missing leading class for ${style}`,
-      );
+      assert.ok(css.includes(`.text-${style} {`), `Missing text class for ${style}`);
+      assert.ok(css.includes(`.leading-${style} {`), `Missing leading class for ${style}`);
     });
   });
 
@@ -85,23 +68,14 @@ describe('gudTypeScaleCss', () => {
       typeScale: gudTypeScale({ hierarchy }),
       tailwind: true,
     });
-    assert.ok(
-      css.includes('@theme'),
-      'Missing @theme directive for Tailwind CSS',
-    );
+    assert.ok(css.includes('@theme'), 'Missing @theme directive for Tailwind CSS');
     hierarchy.forEach((style) => {
-      assert.ok(
-        css.includes(`--text-${style}:`),
-        `Missing text variable for ${style}`,
-      );
+      assert.ok(css.includes(`--text-${style}:`), `Missing text variable for ${style}`);
       assert.ok(
         css.includes(`--text-${style}--line-height:`),
         `Missing line height variable for ${style}`,
       );
-      assert.ok(
-        css.includes(`--leading-${style}:`),
-        `Missing leading variable for ${style}`,
-      );
+      assert.ok(css.includes(`--leading-${style}:`), `Missing leading variable for ${style}`);
     });
   });
 });

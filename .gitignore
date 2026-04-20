@@ -1,7 +1,7 @@
-# os
+# OS
 .DS_Store
 
-# editor
+# Editor
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json
@@ -12,26 +12,23 @@
 *.sln
 *.sw?
 
-# local
-*.env
+# Local
+*.env*
 *.pem
 *.local
+*.local.*
 
-# ai
-*.ai
-
-# logs
+# Logs
 logs
-_.log
+*.log
+*.log.*
 
-# dependencies
+# Dependencies
 node_modules
 
-# artifacts
-dist
-results
-*.tsbuildinfo
-*.tgz
-
-# testing
+# Artifacts
 coverage
+dist
+docs
+*.tgz
+*.tsbuildinfo

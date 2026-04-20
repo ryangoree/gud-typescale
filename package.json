@@ -8,22 +8,38 @@
     "type": "git",
     "url": "git+https://github.com/ryangoree/gud-typescale.git"
   },
-  "sideEffects": false,
   "type": "module",
+  "sideEffects": false,
   "bin": {
     "typescale": "dist/cli/index.js"
   },
   "exports": {
     ".": {
-      "types": "./dist/lib/index.d.ts",
-      "default": "./dist/lib/index.js"
+      "import": {
+        "types": "./dist/lib/index.d.mts",
+        "default": "./dist/lib/index.mjs"
+      },
+      "require": {
+        "types": "./dist/lib/index.d.cts",
+        "default": "./dist/lib/index.cjs"
+      }
     },
     "./package.json": "./package.json"
   },
   "scripts": {
-    "clean": "tsc --build --clean tsconfig.cli.json tsconfig.lib.json",
-    "build": "tsc --build tsconfig.cli.json tsconfig.lib.json",
-    "watch": "tsc --build tsconfig.cli.json tsconfig.lib.json --watch",
+    "test": "vitest run --reporter=verbose",
+    "test:watch": "vitest --reporter=verbose",
+    "test:ci": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && biome check --diagnostic-level error . ",
+    "check:package": "publint",
+    "fix": "biome check --diagnostic-level error . --write",
+    "fix:unsafe": "npm run fix --unsafe",
+    "build": "tsc -p tsconfig.cli.json && tsdown",
+    "build:watch": "tsdown --watch",
+    "build:docs": "typedoc",
+    "preview:docs": "serve ./docs",
     "release": "npm run build && changeset publish"
   },
   "dependencies": {
@@ -33,13 +49,21 @@
     "@biomejs/biome": "^2.4.12",
     "@changesets/cli": "^2.31.0",
     "@types/node": "^25.6.0",
-    "typescript": "^6.0.3"
+    "publint": "^0.3.18",
+    "tsdown": "^0.21.9",
+    "typedoc": "^0.28.19",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.4"
   },
   "imports": {
-    "#/*": "./dist/*.js"
+    "#src/*": {
+      "import": "./dist/*.mjs",
+      "require": "./dist/*.cjs"
+    }
   },
-  "main": "dist/lib/index.js",
-  "types": "dist/lib/index.d.ts",
+  "main": "dist/lib/index.cjs",
+  "module": "dist/lib/index.mjs",
+  "types": "dist/lib/index.d.mts",
   "files": [
     "dist"
   ],

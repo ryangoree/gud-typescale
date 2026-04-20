@@ -13,28 +13,27 @@
     "enabled": true,
     "formatWithErrors": false,
     "indentStyle": "space",
+    "indentWidth": 2,
     "lineEnding": "lf",
-    "lineWidth": 80
+    "lineWidth": 100
   },
   "linter": {
     "enabled": true,
-
     "rules": {
+      "recommended": true,
       "complexity": {
         "noBannedTypes": "off"
       },
       "correctness": {
+        "noUnusedImports": "error",
         "noEmptyCharacterClassInRegex": "off"
       },
       "style": {
-        "noNonNullAssertion": {
-          "level": "info",
-          "fix": "none"
-        },
+        "noNonNullAssertion": "info",
         "noParameterAssign": "off"
       },
       "suspicious": {
-        "noExplicitAny": "off",
+        "noExplicitAny": "info",
         "noAssignInExpressions": "off",
         "noEmptyInterface": "off"
       }
@@ -42,10 +41,12 @@
   },
   "javascript": {
     "formatter": {
-      "quoteStyle": "single",
-      "trailingCommas": "all",
+      "arrowParentheses": "always",
       "indentStyle": "space",
-      "indentWidth": 2
+      "indentWidth": 2,
+      "quoteStyle": "single",
+      "semicolons": "always",
+      "trailingCommas": "all"
     }
   }
 }

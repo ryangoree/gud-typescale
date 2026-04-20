@@ -54,16 +54,8 @@ export interface BaseTypeScaleOptions {
  * @param scaleIndex - The index of the font size to calculate.
  * @param options - Options for the type scale.
  */
-export function gudFontSize(
-  scaleIndex: number,
-  options?: BaseTypeScaleOptions,
-): number {
-  const {
-    base = 16,
-    multiplier = 2,
-    steps = 5,
-    round = rounder(0.25, 'up'),
-  } = options || {};
+export function gudFontSize(scaleIndex: number, options?: BaseTypeScaleOptions): number {
+  const { base = 16, multiplier = 2, steps = 5, round = rounder(0.25, 'up') } = options || {};
   return round(base * multiplier ** (scaleIndex / steps));
 }
 
@@ -91,10 +83,7 @@ export interface LineHeightOptions {
  * @param fontSize - The font size for which a line height will be calculated.
  * @param options - Options for the baseline grid.
  */
-export function gudLineHeight(
-  fontSize: number,
-  options?: LineHeightOptions,
-): number {
+export function gudLineHeight(fontSize: number, options?: LineHeightOptions): number {
   const { multiplier = 1.3, gridHeight = 8 } = options || {};
   return rounder(gridHeight, 'up')(fontSize * multiplier);
 }
@@ -135,19 +124,11 @@ export function gudTypeScaleIndex(index: number): number {
  *
  * @see [MDN - Values And Units - Lengths](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics/Values_and_units#lengths)
  */
-export type TypeScaleUnit =
-  | 'cm'
-  | 'mm'
-  | 'Q'
-  | 'in'
-  | 'pc'
-  | 'pt'
-  | 'px'
-  | 'em'
-  | 'rem';
+export type TypeScaleUnit = 'cm' | 'mm' | 'Q' | 'in' | 'pc' | 'pt' | 'px' | 'em' | 'rem';
 
-export type TypeScaleValue<TUnit extends TypeScaleUnit | undefined> =
-  TUnit extends undefined ? number : string;
+export type TypeScaleValue<TUnit extends TypeScaleUnit | undefined> = TUnit extends undefined
+  ? number
+  : string;
 
 export type TypeScale<
   TStyle extends string = string,
@@ -248,8 +229,7 @@ export const DEFAULT_TYPE_SCALE_HIERARCHY = [
 /**
  * The default type scale style.
  */
-export type DefaultTypeScaleStyle =
-  (typeof DEFAULT_TYPE_SCALE_HIERARCHY)[number];
+export type DefaultTypeScaleStyle = (typeof DEFAULT_TYPE_SCALE_HIERARCHY)[number];
 
 /**
  * Generate font sizes and line heights for a given hierarchy of font styles.
@@ -289,8 +269,7 @@ export function gudTypeScale<
     let fontSize = rawFontSize as TypeScaleValue<TUnit>;
     let lineHeight = rawLineHeight as TypeScaleValue<TUnit>;
     if (unit === 'rem' || unit === 'em') {
-      fontSize =
-        `${parseFloat((rawFontSize / base).toFixed(4))}${unit}` as TypeScaleValue<TUnit>;
+      fontSize = `${parseFloat((rawFontSize / base).toFixed(4))}${unit}` as TypeScaleValue<TUnit>;
       lineHeight =
         `${parseFloat((rawLineHeight / base).toFixed(4))}${unit}` as TypeScaleValue<TUnit>;
     } else if (unit) {
@@ -356,23 +335,17 @@ export function gudTypeScaleCss<
 
   // Generate CSS custom properties (variables)
   const fontSizeVariablePrefix = tailwind ? `text-${prefix}` : 'font-size-';
-  const lineHeightVariablePrefix = tailwind
-    ? `leading-${prefix}`
-    : 'line-height-';
+  const lineHeightVariablePrefix = tailwind ? `leading-${prefix}` : 'line-height-';
   const fontSizeProperties: string[] = [];
   const lineHeightProperties: string[] = [];
   for (const [key, value] of Object.entries(typeScale)) {
-    fontSizeProperties.push(
-      `  --${fontSizeVariablePrefix}${key}: ${value.fontSize};`,
-    );
+    fontSizeProperties.push(`  --${fontSizeVariablePrefix}${key}: ${value.fontSize};`);
     if (tailwind) {
       fontSizeProperties.push(
         `  --${fontSizeVariablePrefix}${key}--line-height: ${value.lineHeight};`,
       );
     }
-    lineHeightProperties.push(
-      `  --${lineHeightVariablePrefix}${key}: ${value.lineHeight};`,
-    );
+    lineHeightProperties.push(`  --${lineHeightVariablePrefix}${key}: ${value.lineHeight};`);
   }
 
   css += `${fontSizeProperties.join('\n')}\n`;

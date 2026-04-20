@@ -3,15 +3,7 @@
   "extends": "./tsconfig.json",
   "include": ["src/cli"],
   "compilerOptions": {
-    // Output
-    "target": "esnext",
-    "rootDir": "src/cli",
-    "outDir": "dist/cli",
-    "esModuleInterop": true
-  },
-  "references": [
-    {
-      "path": "./tsconfig.lib.json"
-    }
-  ]
+    "rootDir": "src",
+    "outDir": "dist"
+  }
 }

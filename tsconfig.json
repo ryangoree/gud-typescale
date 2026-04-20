@@ -1,21 +1,30 @@
 {
-  "$schema": "https://json.schemastore.org/tsconfig",
   "include": ["./*.ts", "src"],
   "compilerOptions": {
-    // Environment
+    // Environment (affects what's available in source code)
     "lib": ["esnext"],
-    "module": "nodenext",
+    "module": "esnext",
+    "types": ["node"],
     "moduleDetection": "force",
-    "moduleResolution": "nodenext",
+    "moduleResolution": "bundler",
     "isolatedModules": true,
     "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true,
+    "noUncheckedSideEffectImports": true,
     "paths": {
-      "#/*": ["./src/*.ts"]
+      "#src/*": ["./src/*.ts"]
     },
 
-    // Type Checking
-    "skipLibCheck": true,
+    // Type Checking (affects type checking and inference)
     "strict": true,
+    "skipLibCheck": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noUncheckedIndexedAccess": true,
+    "noFallthroughCasesInSwitch": true,
+    "noPropertyAccessFromIndexSignature": false,
+
+    // Output
+    "target": "esnext",
+    "esModuleInterop": true
   }
 }
