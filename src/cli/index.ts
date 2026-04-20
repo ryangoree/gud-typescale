@@ -8,7 +8,7 @@ run({
       maxWidth: 120,
     }),
   ],
-  defaultCommand: 'css',
+  defaultCommand: 'typeScale',
 }).catch((error) => {
   console.error(String(error));
   process.exit(1);

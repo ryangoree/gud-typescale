@@ -1,17 +1,17 @@
 {
-  "name": "@gud/typescale",
+  "name": "@gud/design-system",
   "version": "2.0.2",
-  "description": "A utility for generating type scales.",
+  "description": "A utility for generating design systems.",
   "license": "MIT",
   "author": "Ryan Goree (https://github.com/ryangoree)",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ryangoree/gud-typescale.git"
+    "url": "git+https://github.com/ryangoree/gud-design-system.git"
   },
   "type": "module",
   "sideEffects": false,
   "bin": {
-    "typescale": "dist/cli/index.js"
+    "design": "dist/cli/index.js"
   },
   "exports": {
     ".": {

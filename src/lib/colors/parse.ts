@@ -213,7 +213,7 @@ function normalizeColorValue(value: string, percentMax = 1): number {
  * @throws If the hex color format is invalid.
  */
 function hexToRgb(hex: string): RGB {
-  const cleanHex = hex.replace(/^#src/, '');
+  const cleanHex = hex.replace(/^#/, '');
   let r: string | undefined;
   let g: string | undefined;
   let b: string | undefined;
