@@ -1,6 +1,7 @@
 import assert from 'node:assert';
 import { describe, it } from 'node:test';
-import { gudTypeScale, gudTypeScaleCss, rounder } from '#src/lib/index';
+import { gudTypeScale, gudTypeScaleCss } from '#src/lib/typography/typeScale';
+import { rounder } from '#src/lib/utils/rounder';
 
 describe('rounder', () => {
   it('rounds correctly', () => {
