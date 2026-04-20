@@ -6,7 +6,7 @@ import {
   gudTypeScaleCss,
   rounder,
   type TypeScaleUnit,
-} from '#src/lib/index';
+} from '#/lib/index';
 
 declare module '@gud/cli' {
   interface CustomOptionTypes {
