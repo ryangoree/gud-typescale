@@ -1,6 +1,8 @@
 // Color
 export {
+  type ColorPaletteCSSOptions,
   type ColorScaleOptions,
+  generateColorPaletteCss,
   generateColorPalettes,
   generateColorScale,
   interpolateOklch,

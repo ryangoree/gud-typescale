@@ -73,13 +73,61 @@ export function generateColorScale(
 }
 
 /** Generate Tailwind-style hex color scales for multiple named colors. */
-export function generateColorPalettes(
-  colors: Record<string, string>,
+export function generateColorPalettes<const T extends Record<string, string>>(
+  colors: T,
   options?: ColorScaleOptions,
-): Record<string, Record<number, string>> {
+): { [K in keyof T]: Record<number, string> } {
   return Object.fromEntries(
     Object.entries(colors).map(([name, color]) => [name, generateColorScale(color, options)]),
-  );
+  ) as { [K in keyof T]: Record<number, string> };
+}
+
+export interface ColorPaletteCSSOptions {
+  /**
+   * The color palettes to generate CSS for.
+   *
+   * @default {}
+   * @see {@linkcode generateColorPalettes}
+   */
+  palettes?: Record<string, Record<number, string>>;
+
+  /**
+   * The prefix to use for the CSS custom properties.
+   */
+  prefix?: string;
+
+  /**
+   * Whether to generate CSS with [Tailwind CSS](https://tailwindcss.com/) v4 directives.
+   *
+   * @default false
+   */
+  tailwind?: boolean;
+}
+
+/**
+ * Generate CSS custom properties for color palettes.
+ */
+export function generateColorPaletteCss(options?: ColorPaletteCSSOptions): string {
+  const { palettes = {}, prefix = '', tailwind = false } = options ?? {};
+
+  let css = '/* Generated Gud Color Palette */\n';
+  css += '\n';
+
+  if (tailwind) {
+    css += '@theme {\n';
+  } else {
+    css += ':root {\n';
+  }
+
+  for (const [name, scale] of Object.entries(palettes)) {
+    for (const [step, value] of Object.entries(scale)) {
+      css += `  --${prefix}color-${name}-${step}: ${value};\n`;
+    }
+  }
+
+  css += '}\n';
+
+  return css;
 }
 
 /** Linearly interpolate between two colors in OKLCH space. */

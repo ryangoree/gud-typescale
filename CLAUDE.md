@@ -26,7 +26,9 @@ npm run check:package # publint validation
 - **colors/** — `colorPaletteGenerator.ts` generates color scales via OKLCH interpolation. `convert.ts`, `parse.ts`, `format.ts`, `types.ts` handle color format conversions (hex, rgb, hsl, oklch, oklab, cmyk).
 - **utils/** — small helpers: `rounder.ts` (rounding factory), `scale.ts` (value range scaling), `pxToRem.ts`, `clamp.ts`.
 
-**CLI** (`src/cli/`) — uses `@gud/cli` framework. `commands/typeScale.ts` generates CSS files with type scale custom properties and Tailwind v4 `@theme` directives. Color palette generation is being integrated into the CLI alongside the existing typography commands.
+**CLI** (`src/cli/`) — uses `@gud/cli` framework with `@gud/cli-menu` for interactive command selection. Commands are auto-discovered from `src/cli/commands/`:
+- `typeScale` — generates CSS with type scale custom properties and Tailwind v4 `@theme` directives
+- `colorPalette` — generates CSS color palette custom properties from base colors in `name=hex` format, using OKLCH interpolation
 
 ## Key Details
 

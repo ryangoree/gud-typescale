@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { help, run } from '@gud/cli';
+import { menu } from '@gud/cli-menu';
 
 run({
   plugins: [
@@ -7,8 +8,10 @@ run({
       helpFlags: ['help'],
       maxWidth: 120,
     }),
+    menu({
+      title: 'Gud Design System',
+    }),
   ],
-  defaultCommand: 'typeScale',
 }).catch((error) => {
   console.error(String(error));
   process.exit(1);
