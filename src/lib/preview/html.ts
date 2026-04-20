@@ -50,7 +50,7 @@ export function generatePreviewHtml({
           const hex = scale[step] ?? '';
           if (!hex) return '';
           return `
-          <div class="swatch-cell">
+          <div class="swatch-cell" onclick="copyHex(this,'${hex}')" title="Copy ${hex}">
             <div class="swatch-block" style="background: ${hex}"></div>
             <span class="swatch-step">${step}</span>
             <code class="swatch-var">--${prefix}color-${name}-${step}</code>
@@ -93,7 +93,9 @@ export function generatePreviewHtml({
     .palette { margin-bottom: 2rem; }
     .palette h3 { font-size: 0.875rem; font-weight: 600; margin-bottom: 0.75rem; text-transform: capitalize; }
     .swatch-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: 0.5rem; }
-    .swatch-cell { display: flex; flex-direction: column; gap: 0.25rem; }
+    .swatch-cell { display: flex; flex-direction: column; gap: 0.25rem; cursor: pointer; user-select: none; }
+    .swatch-cell:hover .swatch-block { outline: 2px solid rgba(0,0,0,0.2); outline-offset: 2px; }
+    .swatch-hex.copied { color: #16a34a; font-weight: 600; }
     .swatch-block { width: 100%; aspect-ratio: 1; border-radius: 6px; border: 1px solid rgba(0,0,0,0.08); }
     .swatch-step { font-size: 0.75rem; font-weight: 600; }
     .swatch-var { font-size: 0.65rem; color: #888; font-family: ui-monospace, monospace; word-break: break-all; }
@@ -118,6 +120,15 @@ export function generatePreviewHtml({
       ${typeRows}
     </section>
   </main>
+  <script>
+    function copyHex(cell, hex) {
+      navigator.clipboard.writeText(hex);
+      var label = cell.querySelector('.swatch-hex');
+      label.textContent = 'Copied!';
+      label.classList.add('copied');
+      setTimeout(function() { label.textContent = hex; label.classList.remove('copied'); }, 1500);
+    }
+  </script>
 </body>
 </html>`;
 }
