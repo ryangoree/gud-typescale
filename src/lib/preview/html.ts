@@ -1,4 +1,4 @@
-import type { TypeScale } from '#src/lib/typography/typeScale';
+import type { TypeScale, TypeScaleUnit } from '#src/lib/typography/typeScale';
 
 export interface PreviewHtmlOptions {
   typeScale: TypeScale;
@@ -6,6 +6,27 @@ export interface PreviewHtmlOptions {
   colorSteps: number[];
   prefix?: string;
   tailwind?: boolean;
+  /** Override the unit used to display font-size and line-height values in the preview. */
+  previewUnit?: TypeScaleUnit;
+  /** Base font size in px, used when converting between px and rem. Default: 16 */
+  base?: number;
+}
+
+function toDisplayValue(value: string | number, target: TypeScaleUnit, base: number): string {
+  if (typeof value === 'number') {
+    if (target === 'rem') return `${parseFloat((value / base).toFixed(4))}rem`;
+    if (target === 'px') return `${value}px`;
+    return `${value}${target}`;
+  }
+  const match = String(value).match(/^(-?[\d.]+)(.+)$/);
+  if (!match) return String(value);
+  const [, numStr, unit] = match;
+  if (!numStr || !unit) return String(value);
+  const num = parseFloat(numStr);
+  if (unit === target) return String(value);
+  if (unit === 'rem' && target === 'px') return `${Math.round(num * base * 1000) / 1000}px`;
+  if (unit === 'px' && target === 'rem') return `${parseFloat((num / base).toFixed(4))}rem`;
+  return String(value);
 }
 
 export function generatePreviewHtml({
@@ -14,6 +35,8 @@ export function generatePreviewHtml({
   colorSteps,
   prefix = '',
   tailwind = false,
+  previewUnit,
+  base = 16,
 }: PreviewHtmlOptions): string {
   const hasPalettes = Object.keys(palettes).length > 0;
 
@@ -22,8 +45,10 @@ export function generatePreviewHtml({
 
   const typeRows = Object.entries(typeScale)
     .map(([style, { fontSize, lineHeight }]) => {
-      const fs = typeof fontSize === 'number' ? `${fontSize}px` : fontSize;
-      const lh = typeof lineHeight === 'number' ? `${lineHeight}px` : lineHeight;
+      const rawFs = typeof fontSize === 'number' ? `${fontSize}px` : fontSize;
+      const rawLh = typeof lineHeight === 'number' ? `${lineHeight}px` : lineHeight;
+      const fs = previewUnit ? toDisplayValue(rawFs, previewUnit, base) : rawFs;
+      const lh = previewUnit ? toDisplayValue(rawLh, previewUnit, base) : rawLh;
       const fsVar = `--${fontSizeVarPrefix}${style}`;
       const lhVar = tailwind
         ? `--leading-${fontSizeVarPrefix}${style}`

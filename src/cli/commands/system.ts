@@ -151,6 +151,13 @@ export default command({
       type: 'boolean',
       default: false,
     },
+    previewUnit: {
+      description:
+        'Unit used to display font-size and line-height values in the preview. Defaults to the type scale unit.',
+      type: 'string',
+      customType: 'unit',
+      choices: ['cm', 'mm', 'Q', 'in', 'pc', 'pt', 'px', 'em', 'rem'],
+    },
     previewOutput: {
       alias: ['o'],
       description: 'Output file path for the HTML preview.',
@@ -184,6 +191,7 @@ export default command({
     const tailwind = await options.tailwind();
 
     const preview = await options.preview();
+    const previewUnit = await options.previewUnit();
     const previewOutput = await options.previewOutput();
 
     const parsedColorSteps = colorSteps.map(Number);
@@ -235,6 +243,8 @@ export default command({
           colorSteps: parsedColorSteps,
           prefix,
           tailwind,
+          previewUnit,
+          base,
         }),
         'utf8',
       );
