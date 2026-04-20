@@ -1,3 +1,6 @@
+// Preview
+export { type PreviewHtmlOptions, generatePreviewHtml } from '#src/lib/preview/html';
+
 // Color
 export {
   type ColorPaletteCSSOptions,
