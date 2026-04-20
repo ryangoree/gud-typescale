@@ -8,5 +8,5 @@ node dist/cli/index.js preview \
   --roundDirection up \
   --gridHeight 8 \
   --lineHeightMultiplier 1.3 \
-  --output preview3.html
+  --output preview.html
   # --tailwind
