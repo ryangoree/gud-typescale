@@ -1,4 +1,10 @@
 // Color
+export {
+  type ColorScaleOptions,
+  generateColorPalettes,
+  generateColorScale,
+  interpolateOklch,
+} from '#src/lib/colors/colorPaletteGenerator';
 export { toCmyk, toHex, toHsl, toOklab, toOklch, toRgb } from '#src/lib/colors/convert';
 export { formatColor } from '#src/lib/colors/format';
 export { type ParsedColor, parseColor } from '#src/lib/colors/parse';
