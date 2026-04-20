@@ -1,5 +1,4 @@
-import assert from 'node:assert';
-import { describe, it } from 'node:test';
+import { describe, expect, it } from 'vitest';
 import { gudTypeScale, gudTypeScaleCss } from '#src/lib/typography/typeScale';
 import { rounder } from '#src/lib/utils/rounder';
 
@@ -8,10 +7,10 @@ describe('rounder', () => {
     const round = rounder(5);
     const roundUp = rounder(5, 'up');
     const roundDown = rounder(5, 'down');
-    assert.strictEqual(round(1), 0);
-    assert.strictEqual(round(4), 5);
-    assert.strictEqual(roundUp(1), 5);
-    assert.strictEqual(roundDown(4), 0);
+    expect(round(1)).toBe(0);
+    expect(round(4)).toBe(5);
+    expect(roundUp(1)).toBe(5);
+    expect(roundDown(4)).toBe(0);
   });
 });
 
@@ -20,17 +19,14 @@ describe('gudTypeScale', () => {
     const hierarchy = ['xs', 's', 'm', 'l', 'xl'] as const;
     const typeScale = gudTypeScale({ hierarchy });
     hierarchy.forEach((style) => {
-      assert.ok(typeScale[style], `Entry for ${style} is missing`);
-      assert.strictEqual(
-        typeof typeScale[style].fontSize,
+      expect(typeScale[style], `Entry for ${style} is missing`).toBeTruthy();
+      expect(typeof typeScale[style].fontSize, `Font size for ${style} should be a number`).toBe(
         'number',
-        `Font size for ${style} should be a number`,
       );
-      assert.strictEqual(
+      expect(
         typeof typeScale[style].lineHeight,
-        'number',
         `Line height for ${style} should be a number`,
-      );
+      ).toBe('number');
     });
   });
 
@@ -41,8 +37,8 @@ describe('gudTypeScale', () => {
     const {
       p: { fontSize: stringFontSize },
     } = gudTypeScale({ unit: 'px' });
-    assert.strictEqual(typeof numberFontSize, 'number', 'Font size should be a number');
-    assert.match(stringFontSize, /^\d+(\.\d+)?px$/, 'Font size should be a string with px unit');
+    expect(typeof numberFontSize, 'Font size should be a number').toBe('number');
+    expect(stringFontSize, 'Font size should be a string with px unit').toMatch(/^\d+(\.\d+)?px$/);
   });
 });
 
@@ -53,13 +49,10 @@ describe('gudTypeScaleCss', () => {
       typeScale: gudTypeScale({ hierarchy }),
     });
     hierarchy.forEach((style) => {
-      assert.ok(css.includes(`--font-size-${style}:`), `Missing font size variable for ${style}`);
-      assert.ok(
-        css.includes(`--line-height-${style}:`),
-        `Missing line height variable for ${style}`,
-      );
-      assert.ok(css.includes(`.text-${style} {`), `Missing text class for ${style}`);
-      assert.ok(css.includes(`.leading-${style} {`), `Missing leading class for ${style}`);
+      expect(css, `Missing font size variable for ${style}`).toContain(`--font-size-${style}:`);
+      expect(css, `Missing line height variable for ${style}`).toContain(`--line-height-${style}:`);
+      expect(css, `Missing text class for ${style}`).toContain(`.text-${style} {`);
+      expect(css, `Missing leading class for ${style}`).toContain(`.leading-${style} {`);
     });
   });
 
@@ -69,14 +62,13 @@ describe('gudTypeScaleCss', () => {
       typeScale: gudTypeScale({ hierarchy }),
       tailwind: true,
     });
-    assert.ok(css.includes('@theme'), 'Missing @theme directive for Tailwind CSS');
+    expect(css, 'Missing @theme directive for Tailwind CSS').toContain('@theme');
     hierarchy.forEach((style) => {
-      assert.ok(css.includes(`--text-${style}:`), `Missing text variable for ${style}`);
-      assert.ok(
-        css.includes(`--text-${style}--line-height:`),
-        `Missing line height variable for ${style}`,
+      expect(css, `Missing text variable for ${style}`).toContain(`--text-${style}:`);
+      expect(css, `Missing line height variable for ${style}`).toContain(
+        `--text-${style}--line-height:`,
       );
-      assert.ok(css.includes(`--leading-${style}:`), `Missing leading variable for ${style}`);
+      expect(css, `Missing leading variable for ${style}`).toContain(`--leading-${style}:`);
     });
   });
 });
