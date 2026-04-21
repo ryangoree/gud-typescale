@@ -24,11 +24,13 @@ npm run check:package # publint validation
 
 - **typography/** — `typeScale.ts` exports `gudTypeScale()`, `gudFontSize()`, `gudTypeScaleCss()`. Scales use exponential progression: a base size × multiplier^step. `lineHeight.ts` exports `gudLineHeight()` for paired line heights.
 - **colors/** — `colorPaletteGenerator.ts` generates color scales via OKLCH interpolation. `convert.ts`, `parse.ts`, `format.ts`, `types.ts` handle color format conversions (hex, rgb, hsl, oklch, oklab, cmyk).
+- **preview/** — `html.ts` exports `generatePreviewHtml()`, which renders a standalone HTML page showing the type scale and color palettes. Supports a `previewUnit` option to display values in a different unit than the scale was generated with.
 - **utils/** — small helpers: `rounder.ts` (rounding factory), `scale.ts` (value range scaling), `pxToRem.ts`, `clamp.ts`.
 
 **CLI** (`src/cli/`) — uses `@gud/cli` framework with `@gud/cli-menu` for interactive command selection. Commands are auto-discovered from `src/cli/commands/`:
 - `typeScale` — generates CSS with type scale custom properties and Tailwind v4 `@theme` directives
 - `colorPalette` — generates CSS color palette custom properties from base colors in `name=hex` format, using OKLCH interpolation
+- `system` — generates the full design system in one shot: type scale CSS, color palette CSS (optional), and an HTML preview (optional via `--preview`). Accepts all options from both individual commands plus `--previewUnit` and `--previewOutput`.
 
 ## Key Details
 
