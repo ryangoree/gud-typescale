@@ -62,7 +62,7 @@ export function generatePreviewHtml({
         <span class="meta-value">${fs} / ${lh}</span>
         <code class="meta-var">${fsVar}</code>
         <code class="meta-var">${lhVar}</code>
-        <code class="meta-class">${utilClass}</code>
+        <code class="meta-class" onclick="copyText(this,'${utilClass.slice(1)}')" title="Copy ${utilClass}">${utilClass}</code>
       </div>
     </div>`;
     })
@@ -131,7 +131,9 @@ export function generatePreviewHtml({
     .meta-name { font-size: 0.75rem; font-weight: 600; }
     .meta-value { font-size: 0.7rem; color: #888; font-family: ui-monospace, monospace; }
     .meta-var { font-size: 0.7rem; color: #6b7280; font-family: ui-monospace, monospace; }
-    .meta-class { font-size: 0.7rem; color: #3b82f6; font-family: ui-monospace, monospace; }
+    .meta-class { font-size: 0.7rem; color: #3b82f6; font-family: ui-monospace, monospace; cursor: pointer; user-select: none; }
+    .meta-class:hover { color: #1d4ed8; }
+    .meta-class.copied { color: #16a34a; font-weight: 600; }
   </style>
 </head>
 <body>
@@ -152,6 +154,13 @@ export function generatePreviewHtml({
       label.textContent = 'Copied!';
       label.classList.add('copied');
       setTimeout(function() { label.textContent = hex; label.classList.remove('copied'); }, 1500);
+    }
+    function copyText(el, text) {
+      navigator.clipboard.writeText(text);
+      var prev = el.textContent;
+      el.textContent = 'Copied!';
+      el.classList.add('copied');
+      setTimeout(function() { el.textContent = prev; el.classList.remove('copied'); }, 1500);
     }
   </script>
 </body>
