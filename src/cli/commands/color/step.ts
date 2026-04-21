@@ -1,6 +1,6 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { command } from '@gud/cli';
-import { generateColorScale } from '#src/lib/index';
+import { generateColorScale } from '#src/lib';
 
 export default command({
   description: 'Generate a single CSS color step from a base color.',

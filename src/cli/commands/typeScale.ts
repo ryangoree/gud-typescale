@@ -1,19 +1,7 @@
 import { writeFileSync } from 'node:fs';
 import { command } from '@gud/cli';
-import {
-  DEFAULT_TYPE_SCALE_HIERARCHY,
-  gudTypeScale,
-  gudTypeScaleCss,
-  rounder,
-  type TypeScaleUnit,
-} from '#src/lib/index';
-
-declare module '@gud/cli' {
-  interface CustomOptionTypes {
-    roundDirection: 'up' | 'down' | 'nearest';
-    unit: TypeScaleUnit;
-  }
-}
+import { roundDirectionChoices, unitChoices } from '#src/cli/customTypes';
+import { DEFAULT_TYPE_SCALE_HIERARCHY, gudTypeScale, gudTypeScaleCss, rounder } from '#src/lib';
 
 export default command({
   description: 'Generate a CSS type scale based on a hierarchy of font styles.',
@@ -60,7 +48,7 @@ export default command({
       description: 'Rounding direction.',
       type: 'string',
       customType: 'roundDirection',
-      choices: ['up', 'down', 'nearest'],
+      choices: roundDirectionChoices,
       default: 'up',
     },
     gridHeight: {
@@ -80,7 +68,7 @@ export default command({
       description: 'CSS unit to append to font sizes and line heights.',
       type: 'string',
       customType: 'unit',
-      choices: ['cm', 'mm', 'Q', 'in', 'pc', 'pt', 'px', 'em', 'rem'],
+      choices: unitChoices,
       default: 'rem',
     },
     prefix: {

@@ -27,7 +27,7 @@ npm run check:package # publint validation
 - **preview/** — `html.ts` exports `generatePreviewHtml()`, which renders a standalone HTML page showing the type scale and color palettes. Supports a `previewUnit` option to display values in a different unit than the scale was generated with.
 - **utils/** — small helpers: `rounder.ts` (rounding factory), `scale.ts` (value range scaling), `pxToRem.ts`, `clamp.ts`.
 
-**CLI** (`src/cli/`) — uses `@gud/cli` framework with `@gud/cli-menu` for interactive command selection. Commands are auto-discovered from `src/cli/commands/`:
+**CLI** (`src/cli/`) — uses `@gud/cli` framework with `@gud/cli-menu` for interactive command selection. Commands are auto-discovered from `src/cli/commands/`. **All lib imports in CLI commands must go through `#src/lib`** — never import directly from sub-paths like `#src/lib/preview/parseCss`. The lib is bundled separately by tsdown, so direct sub-path imports break after the build. The `#src/lib` alias is explicitly mapped to `src/lib/index.ts` in `tsconfig.json`.
 - `typeScale` — generates CSS with type scale custom properties and Tailwind v4 `@theme` directives
 - `colorPalette` — generates CSS color palette custom properties from base colors in `name=hex` format, using OKLCH interpolation
 - `system` — generates the full design system in one shot: type scale CSS, color palette CSS (optional), and an HTML preview (optional via `--preview`). Accepts all options from both individual commands plus `--previewUnit` and `--previewOutput`.

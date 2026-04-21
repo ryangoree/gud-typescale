@@ -1,6 +1,6 @@
 import { writeFileSync } from 'node:fs';
 import { command } from '@gud/cli';
-import { generateColorPaletteCss, generateColorPalettes } from '#src/lib/index';
+import { generateColorPaletteCss, generateColorPalettes } from '#src/lib';
 
 export default command({
   description: 'Generate a CSS color palette from one or more base colors.',

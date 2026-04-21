@@ -10,6 +10,17 @@ export interface PreviewHtmlOptions {
   previewUnit?: TypeScaleUnit;
   /** Base font size in px, used when converting between px and rem. Default: 16 */
   base?: number;
+  /**
+   * When true, CSS files are referenced via <link> tags instead of having
+   * their data embedded inline. CSS variable values are read at runtime so the
+   * preview stays live when the CSS files are updated and the page is refreshed.
+   */
+  linked?: boolean;
+  /**
+   * Paths to CSS files to include as <link> tags. Only used when `linked` is
+   * true. Paths should be relative from the HTML output file.
+   */
+  cssFiles?: string[];
 }
 
 function toDisplayValue(value: string | number, target: TypeScaleUnit, base: number): string {
@@ -37,6 +48,8 @@ export function generatePreviewHtml({
   tailwind = false,
   previewUnit,
   base = 16,
+  linked = false,
+  cssFiles = [],
 }: PreviewHtmlOptions): string {
   const hasPalettes = Object.keys(palettes).length > 0;
 
@@ -45,15 +58,30 @@ export function generatePreviewHtml({
 
   const typeRows = Object.entries(typeScale)
     .map(([style, { fontSize, lineHeight }]) => {
-      const rawFs = typeof fontSize === 'number' ? `${fontSize}px` : fontSize;
-      const rawLh = typeof lineHeight === 'number' ? `${lineHeight}px` : lineHeight;
-      const fs = previewUnit ? toDisplayValue(rawFs, previewUnit, base) : rawFs;
-      const lh = previewUnit ? toDisplayValue(rawLh, previewUnit, base) : rawLh;
       const fsVar = `--${fontSizeVarPrefix}${style}`;
       const lhVar = tailwind
         ? `--leading-${fontSizeVarPrefix}${style}`
         : `--${lineHeightVarPrefix}${style}`;
       const utilClass = `.${prefix}text-${style}`;
+
+      if (linked) {
+        return `
+    <div class="type-row">
+      <div class="type-sample" style="font-size: var(${fsVar}); line-height: var(${lhVar})">The quick brown fox jumps over the lazy dog</div>
+      <div class="type-meta">
+        <span class="meta-name">${style}</span>
+        <span class="meta-value" data-fs-var="${fsVar}" data-lh-var="${lhVar}"></span>
+        <code class="meta-var">${fsVar}</code>
+        <code class="meta-var">${lhVar}</code>
+        <code class="meta-class" onclick="copyText(this,'${utilClass.slice(1)}')" title="Copy ${utilClass}">${utilClass}</code>
+      </div>
+    </div>`;
+      }
+
+      const rawFs = typeof fontSize === 'number' ? `${fontSize}px` : fontSize;
+      const rawLh = typeof lineHeight === 'number' ? `${lineHeight}px` : lineHeight;
+      const fs = previewUnit ? toDisplayValue(rawFs, previewUnit, base) : rawFs;
+      const lh = previewUnit ? toDisplayValue(rawLh, previewUnit, base) : rawLh;
       return `
     <div class="type-row">
       <div class="type-sample" style="font-size: ${fs}; line-height: ${lh}">The quick brown fox jumps over the lazy dog</div>
@@ -72,13 +100,23 @@ export function generatePreviewHtml({
     .map(([name, scale]) => {
       const swatches = colorSteps
         .map((step) => {
+          const colorVar = `--${prefix}color-${name}-${step}`;
+          if (linked) {
+            return `
+          <div class="swatch-cell" onclick="copyVar(this,'${colorVar}')" title="Copy color">
+            <div class="swatch-block" style="background: var(${colorVar})"></div>
+            <span class="swatch-step">${step}</span>
+            <code class="swatch-var">${colorVar}</code>
+            <span class="swatch-hex" data-color-var="${colorVar}"></span>
+          </div>`;
+          }
           const hex = scale[step] ?? '';
           if (!hex) return '';
           return `
           <div class="swatch-cell" onclick="copyHex(this,'${hex}')" title="Copy ${hex}">
             <div class="swatch-block" style="background: ${hex}"></div>
             <span class="swatch-step">${step}</span>
-            <code class="swatch-var">--${prefix}color-${name}-${step}</code>
+            <code class="swatch-var">${colorVar}</code>
             <span class="swatch-hex">${hex}</span>
           </div>`;
         })
@@ -100,13 +138,37 @@ export function generatePreviewHtml({
     </section>`
     : '';
 
+  const linkTags = cssFiles.map((f) => `  <link rel="stylesheet" href="${f}">`).join('\n');
+
+  const linkedScript = linked
+    ? `
+    var rootStyle = getComputedStyle(document.documentElement);
+    document.querySelectorAll('[data-fs-var]').forEach(function(el) {
+      var fs = rootStyle.getPropertyValue(el.dataset.fsVar).trim();
+      var lh = rootStyle.getPropertyValue(el.dataset.lhVar).trim();
+      el.textContent = fs + ' / ' + lh;
+    });
+    document.querySelectorAll('[data-color-var]').forEach(function(el) {
+      el.textContent = rootStyle.getPropertyValue(el.dataset.colorVar).trim();
+    });
+    function copyVar(cell, varName) {
+      var value = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+      navigator.clipboard.writeText(value);
+      var label = cell.querySelector('.swatch-hex');
+      var prev = label.textContent;
+      label.textContent = 'Copied!';
+      label.classList.add('copied');
+      setTimeout(function() { label.textContent = prev; label.classList.remove('copied'); }, 1500);
+    }`
+    : '';
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Design System Preview</title>
-  <style>
+${linkTags ? `${linkTags}\n` : ''}  <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; color: #1a1a1a; line-height: 1.5; }
     header { padding: 2rem 3rem; border-bottom: 1px solid #e0e0e0; background: #fff; }
@@ -117,8 +179,8 @@ export function generatePreviewHtml({
     .section h2 { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #999; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid #e0e0e0; }
     .palette { margin-bottom: 2rem; }
     .palette h3 { font-size: 0.875rem; font-weight: 600; margin-bottom: 0.75rem; text-transform: capitalize; }
-    .swatch-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: 0.5rem; }
-    .swatch-cell { display: flex; flex-direction: column; gap: 0.25rem; cursor: pointer; user-select: none; }
+    .swatch-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .swatch-cell { display: flex; flex-direction: column; flex: 1; gap: 0.25rem; cursor: pointer; user-select: none; }
     .swatch-cell:hover .swatch-block { outline: 2px solid rgba(0,0,0,0.2); outline-offset: 2px; }
     .swatch-hex.copied { color: #16a34a; font-weight: 600; }
     .swatch-block { width: 100%; aspect-ratio: 1; border-radius: 6px; border: 1px solid rgba(0,0,0,0.08); }
@@ -161,7 +223,7 @@ export function generatePreviewHtml({
       el.textContent = 'Copied!';
       el.classList.add('copied');
       setTimeout(function() { el.textContent = prev; el.classList.remove('copied'); }, 1500);
-    }
+    }${linkedScript}
   </script>
 </body>
 </html>`;

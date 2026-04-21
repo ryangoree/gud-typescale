@@ -1,5 +1,6 @@
 import { writeFileSync } from 'node:fs';
 import { command } from '@gud/cli';
+import { roundDirectionChoices, unitChoices } from '#src/cli/customTypes';
 import {
   DEFAULT_TYPE_SCALE_HIERARCHY,
   generateColorPaletteCss,
@@ -8,15 +9,7 @@ import {
   gudTypeScale,
   gudTypeScaleCss,
   rounder,
-  type TypeScaleUnit,
-} from '#src/lib/index';
-
-declare module '@gud/cli' {
-  interface CustomOptionTypes {
-    roundDirection: 'up' | 'down' | 'nearest';
-    unit: TypeScaleUnit;
-  }
-}
+} from '#src/lib';
 
 export default command({
   description:
@@ -103,7 +96,7 @@ export default command({
       description: 'Rounding direction.',
       type: 'string',
       customType: 'roundDirection',
-      choices: ['up', 'down', 'nearest'],
+      choices: roundDirectionChoices,
       default: 'up',
     },
     gridHeight: {
@@ -123,7 +116,7 @@ export default command({
       description: 'CSS unit for font sizes and line heights.',
       type: 'string',
       customType: 'unit',
-      choices: ['cm', 'mm', 'Q', 'in', 'pc', 'pt', 'px', 'em', 'rem'],
+      choices: unitChoices,
       default: 'rem',
     },
     typeScaleOutput: {
@@ -156,7 +149,7 @@ export default command({
         'Unit used to display font-size and line-height values in the preview. Defaults to the type scale unit.',
       type: 'string',
       customType: 'unit',
-      choices: ['cm', 'mm', 'Q', 'in', 'pc', 'pt', 'px', 'em', 'rem'],
+      choices: unitChoices,
     },
     previewOutput: {
       alias: ['o'],

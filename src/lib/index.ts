@@ -14,6 +14,14 @@ export type { CMYK, Color, HSL, OKLAB, OKLCH, RGB } from '#src/lib/colors/types'
 
 // Preview
 export { generatePreviewHtml, type PreviewHtmlOptions } from '#src/lib/preview/html';
+export {
+  type ParseColorPaletteCssOptions,
+  type ParsedColorPaletteCss,
+  type ParsedTypeScaleCss,
+  type ParseTypeScaleCssOptions,
+  parseColorPaletteCss,
+  parseTypeScaleCss,
+} from '#src/lib/preview/parseCss';
 
 // Typography
 export { gudLineHeight, type LineHeightOptions } from '#src/lib/typography/lineHeight';

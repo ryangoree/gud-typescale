@@ -11,6 +11,7 @@
     "resolveJsonModule": true,
     "noUncheckedSideEffectImports": true,
     "paths": {
+      "#src/lib": ["./src/lib/index.ts"],
       "#src/*": ["./src/*.ts"]
     },
 
