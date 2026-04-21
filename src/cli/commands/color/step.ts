@@ -109,7 +109,26 @@ export default command({
       if (propPattern.test(existing)) {
         existing = existing.replace(propPattern, `$1${value}$3`);
       } else {
-        existing = existing.replace(/(\n\}\n?)$/, `\n  ${propName}: ${value};\n}\n`);
+        const colorPropPattern = new RegExp(
+          `[ \\t]*--${escapeRegex(prefix ?? '')}color-${escapeRegex(name)}-(\\d+):\\s*[^;]+;`,
+          'g',
+        );
+        let insertIndex: number | null = null;
+        let colorMatch: RegExpExecArray | null;
+        while ((colorMatch = colorPropPattern.exec(existing)) !== null) {
+          if (colorMatch[1] !== undefined && parseInt(colorMatch[1], 10) > step) {
+            insertIndex = colorMatch.index;
+            break;
+          }
+        }
+        if (insertIndex !== null) {
+          existing =
+            existing.slice(0, insertIndex) +
+            `  ${propName}: ${value};\n` +
+            existing.slice(insertIndex);
+        } else {
+          existing = existing.replace(/(\n\}\n?)$/, `\n  ${propName}: ${value};\n}\n`);
+        }
       }
       writeFileSync(output, existing, 'utf8');
     } else {
