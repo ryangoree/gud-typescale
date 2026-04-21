@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
-  generateColorPalettes,
-  generateColorScale,
+  gudColorPalettes,
+  gudColorScale,
   interpolateOklch,
 } from '#src/lib/colors/colorPaletteGenerator';
 import { toOklch } from '#src/lib/colors/convert';
@@ -11,21 +11,21 @@ const BLUE = '#2563eb';
 
 describe('generateColorScale', () => {
   it('returns an entry for each default step', () => {
-    const scale = generateColorScale(RED);
+    const scale = gudColorScale(RED);
     expect(Object.keys(scale).map(Number)).toEqual([
       50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950,
     ]);
   });
 
   it('returns valid hex strings', () => {
-    const scale = generateColorScale(RED);
+    const scale = gudColorScale(RED);
     for (const value of Object.values(scale)) {
       expect(value).toMatch(/^#[0-9a-f]{6}$/i);
     }
   });
 
   it('produces lighter colors at lower steps', () => {
-    const scale = generateColorScale(RED);
+    const scale = gudColorScale(RED);
     const l50 = toOklch(scale[50] as string).l;
     const l500 = toOklch(scale[500] as string).l;
     const l950 = toOklch(scale[950] as string).l;
@@ -34,13 +34,13 @@ describe('generateColorScale', () => {
   });
 
   it('respects custom steps', () => {
-    const scale = generateColorScale(RED, { steps: [100, 200, 300] });
+    const scale = gudColorScale(RED, { steps: [100, 200, 300] });
     expect(Object.keys(scale).map(Number)).toEqual([100, 200, 300]);
   });
 
   it('produces the same values for existing steps when a new step is inserted', () => {
-    const before = generateColorScale(RED, { steps: [50, 100, 200, 300] });
-    const after = generateColorScale(RED, { steps: [50, 100, 150, 200, 300] });
+    const before = gudColorScale(RED, { steps: [50, 100, 200, 300] });
+    const after = gudColorScale(RED, { steps: [50, 100, 150, 200, 300] });
     expect(after[50]).toBe(before[50]);
     expect(after[100]).toBe(before[100]);
     expect(after[200]).toBe(before[200]);
@@ -48,7 +48,7 @@ describe('generateColorScale', () => {
   });
 
   it('new inserted step falls between its neighbors in lightness', () => {
-    const scale = generateColorScale(RED, { steps: [50, 100, 150, 200] });
+    const scale = gudColorScale(RED, { steps: [50, 100, 150, 200] });
     const l100 = toOklch(scale[100] as string).l;
     const l150 = toOklch(scale[150] as string).l;
     const l200 = toOklch(scale[200] as string).l;
@@ -57,8 +57,8 @@ describe('generateColorScale', () => {
   });
 
   it('respects custom lightnessRange', () => {
-    const defaultScale = generateColorScale(RED);
-    const widerScale = generateColorScale(RED, { lightnessRange: [0.05, 0.98] });
+    const defaultScale = gudColorScale(RED);
+    const widerScale = gudColorScale(RED, { lightnessRange: [0.05, 0.98] });
     const defaultL50 = toOklch(defaultScale[50] as string).l;
     const widerL50 = toOklch(widerScale[50] as string).l;
     const defaultL950 = toOklch(defaultScale[950] as string).l;
@@ -68,13 +68,13 @@ describe('generateColorScale', () => {
   });
 
   it('throws on invalid color', () => {
-    expect(() => generateColorScale('not-a-color')).toThrow();
+    expect(() => gudColorScale('not-a-color')).toThrow();
   });
 });
 
 describe('generateColorPalettes', () => {
   it('generates a scale for each named color', () => {
-    const palettes = generateColorPalettes({ red: RED, blue: BLUE });
+    const palettes = gudColorPalettes({ red: RED, blue: BLUE });
     expect(Object.keys(palettes)).toEqual(['red', 'blue']);
     expect(Object.keys(palettes.red as object).map(Number)).toEqual([
       50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950,
@@ -82,7 +82,7 @@ describe('generateColorPalettes', () => {
   });
 
   it('passes options to each scale', () => {
-    const palettes = generateColorPalettes({ red: RED }, { steps: [100, 500, 900] });
+    const palettes = gudColorPalettes({ red: RED }, { steps: [100, 500, 900] });
     expect(Object.keys(palettes.red as object).map(Number)).toEqual([100, 500, 900]);
   });
 });

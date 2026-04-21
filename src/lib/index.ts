@@ -1,19 +1,19 @@
-// Preview
-export { type PreviewHtmlOptions, generatePreviewHtml } from '#src/lib/preview/html';
-
 // Color
 export {
   type ColorPaletteCSSOptions,
   type ColorScaleOptions,
-  generateColorPaletteCss,
-  generateColorPalettes,
-  generateColorScale,
+  gudColorPaletteCss as generateColorPaletteCss,
+  gudColorPalettes as generateColorPalettes,
+  gudColorScale as generateColorScale,
   interpolateOklch,
 } from '#src/lib/colors/colorPaletteGenerator';
 export { toCmyk, toHex, toHsl, toOklab, toOklch, toRgb } from '#src/lib/colors/convert';
 export { formatColor } from '#src/lib/colors/format';
 export { type ParsedColor, parseColor } from '#src/lib/colors/parse';
 export type { CMYK, Color, HSL, OKLAB, OKLCH, RGB } from '#src/lib/colors/types';
+
+// Preview
+export { generatePreviewHtml, type PreviewHtmlOptions } from '#src/lib/preview/html';
 
 // Typography
 export { gudLineHeight, type LineHeightOptions } from '#src/lib/typography/lineHeight';
