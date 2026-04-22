@@ -92,11 +92,10 @@ export default command({
     const name = colorEntry.slice(0, eq);
     const hex = colorEntry.slice(eq + 1);
 
-    // Include stepsMin/stepsMax in the steps array so the curve is computed relative to the full
-    // intended range, not just the single requested step.
-    const stepsForCurve = [...new Set([stepsMin, step, stepsMax])].sort((a, b) => a - b);
     const scale = generateColorScale(hex, {
-      steps: stepsForCurve,
+      steps: [step],
+      rangeMin: stepsMin,
+      rangeMax: stepsMax,
       lightnessRange: [lightnessMin, lightnessMax],
       chromaRange: [chromaMin, chromaMax],
     });

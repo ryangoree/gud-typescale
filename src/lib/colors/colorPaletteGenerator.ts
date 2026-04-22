@@ -17,6 +17,18 @@ export interface ColorScaleOptions {
    * of the steps range (500 in the default 50–950 scale).
    */
   anchorStep?: number;
+  /**
+   * Explicit minimum of the step range used to define the curve bounds. When omitted, defaults to
+   * `Math.min(...steps)`. Set this when generating a subset of steps (e.g. a single amend step) so
+   * the curve is evaluated against the full intended range rather than just the provided steps.
+   */
+  rangeMin?: number;
+  /**
+   * Explicit maximum of the step range used to define the curve bounds. When omitted, defaults to
+   * `Math.max(...steps)`. Set this when generating a subset of steps (e.g. a single amend step) so
+   * the curve is evaluated against the full intended range rather than just the provided steps.
+   */
+  rangeMax?: number;
 }
 
 /** Generate a Tailwind-style hex color scale from a single base color. */
@@ -30,8 +42,8 @@ export function gudColorScale(
     chromaRange = DEFAULT_CHROMA_RANGE,
   } = options ?? {};
   const { l, c, h, alpha } = toOklch(baseColor);
-  const stepsMin = Math.min(...steps);
-  const stepsMax = Math.max(...steps);
+  const stepsMin = options?.rangeMin ?? Math.min(...steps);
+  const stepsMax = options?.rangeMax ?? Math.max(...steps);
   const anchorStepValue = options?.anchorStep ?? (stepsMin + stepsMax) / 2;
   const tAnchor = Math.max(0, Math.min(1, (anchorStepValue - stepsMin) / (stepsMax - stepsMin)));
   return Object.fromEntries(

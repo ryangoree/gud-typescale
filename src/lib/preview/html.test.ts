@@ -19,11 +19,17 @@ describe('generatePreviewHtml', () => {
     expect(html, 'Missing closing html tag').toContain('</html>');
   });
 
-  it('includes the type scale section', () => {
+  it('includes the type scale section when styles are provided', () => {
     const html = generatePreviewHtml({ typeScale, palettes, colorSteps });
     expect(html, 'Missing type scale section').toContain('id="type-scale"');
     expect(html, 'Missing p style sample').toContain('font-size: 1rem');
     expect(html, 'Missing h1 style sample').toContain('font-size: 2rem');
+  });
+
+  it('omits the type scale section when typeScale is empty', () => {
+    const html = generatePreviewHtml({ typeScale: {}, palettes, colorSteps: [] });
+    expect(html, 'Type scale section should be absent').not.toContain('id="type-scale"');
+    expect(html, 'Color section should still be present').toContain('id="colors"');
   });
 
   it('includes the color palette section when palettes are provided', () => {
