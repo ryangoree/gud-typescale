@@ -55,13 +55,13 @@ describe('generatePreviewHtml', () => {
   it('uses Tailwind CSS variable names when tailwind is true', () => {
     const html = generatePreviewHtml({ typeScale, palettes, colorSteps, tailwind: true });
     expect(html, 'Missing --text-p var').toContain('--text-p');
-    expect(html, 'Missing --text-p--line-height var').toContain('--text-p--line-height');
-    expect(html, 'Missing --leading-p var').not.toContain('--line-height-p');
+    expect(html, 'Missing --leading-p var').toContain('--leading-p');
+    expect(html, 'Stray --line-height-p var').not.toContain('--line-height-p');
   });
 
   it('applies prefix to variable names and utility classes', () => {
     const html = generatePreviewHtml({ typeScale, palettes, colorSteps, prefix: 'my-' });
-    expect(html, 'Missing prefixed font-size var').toContain('--font-size-my-p');
+    expect(html, 'Missing prefixed font-size var').toContain('--my-font-size-p');
     expect(html, 'Missing prefixed utility class').toContain('.my-text-p');
     expect(html, 'Missing prefixed color var').toContain('--my-color-blue-500');
   });

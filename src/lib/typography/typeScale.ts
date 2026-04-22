@@ -286,8 +286,8 @@ export function gudTypeScaleCss(options?: TypeScaleCSSOptions): string {
   }
 
   // Generate CSS custom properties (variables)
-  const fontSizeVariablePrefix = tailwind ? `text-${prefix}` : 'font-size-';
-  const lineHeightVariablePrefix = tailwind ? `leading-${prefix}` : 'line-height-';
+  const fontSizeVariablePrefix = tailwind ? `text-${prefix}` : `${prefix}font-size-`;
+  const lineHeightVariablePrefix = tailwind ? `leading-${prefix}` : `${prefix}line-height-`;
   const fontSizeProperties: string[] = [];
   const lineHeightProperties: string[] = [];
   for (const [key, value] of Object.entries(typeScale)) {

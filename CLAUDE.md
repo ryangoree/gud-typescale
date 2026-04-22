@@ -5,15 +5,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-npm test              # run tests (vitest)
-npm run test:watch    # watch mode
-npm run test:coverage # coverage report
-npm run build         # tsc + tsdown (ESM + CJS)
-npm run build:watch   # watch mode
-npm run typecheck     # type-check without emit
-npm run check         # typecheck + Biome lint
-npm run fix           # Biome auto-fix
-npm run check:package # publint validation
+bun run test          # run tests (vitest)
+bun run test:watch    # watch mode
+bun run test:coverage # coverage report
+bun run build         # tsc + tsdown (ESM + CJS)
+bun run build:watch   # watch mode
+bun run typecheck     # type-check without emit
+bun run check         # typecheck + Biome lint
+bun run fix           # Biome auto-fix
+bun run check:package # publint validation
 ```
 
 ## Architecture

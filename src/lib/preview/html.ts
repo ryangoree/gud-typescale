@@ -54,16 +54,14 @@ export function generatePreviewHtml({
   const hasTypeScale = Object.keys(typeScale).length > 0;
   const hasPalettes = Object.keys(palettes).length > 0;
 
-  const fontSizeVarPrefix = tailwind ? `text-${prefix}` : `font-size-${prefix}`;
-  const lineHeightVarPrefix = tailwind ? `leading-${prefix}` : `line-height-${prefix}`;
+  const fontSizeVariablePrefix = tailwind ? `text-${prefix}` : `${prefix}font-size-`;
+  const lineHeightVariablePrefix = tailwind ? `leading-${prefix}` : `${prefix}line-height-`;
 
   const typeRows = Object.entries(typeScale)
     .map(([style, { fontSize, lineHeight }]) => {
-      const fsVar = `--${fontSizeVarPrefix}${style}`;
-      const lhVar = tailwind
-        ? `--leading-${fontSizeVarPrefix}${style}`
-        : `--${lineHeightVarPrefix}${style}`;
-      const utilClass = `.${prefix}text-${style}`;
+      const fsVar = `--${fontSizeVariablePrefix}${style}`;
+      const lhVar = `--${lineHeightVariablePrefix}${style}`;
+      const utilClass = tailwind ? `.text-${prefix}${style}` : `.${prefix}text-${style}`;
 
       if (linked) {
         return `
