@@ -1,6 +1,6 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { command } from '@gud/cli';
-import { generateColorScale } from '#src/lib';
+import { gudColorScale } from '#src/lib';
 
 export default command({
   description: 'Generate a single CSS color step from a base color.',
@@ -92,7 +92,7 @@ export default command({
     const name = colorEntry.slice(0, eq);
     const hex = colorEntry.slice(eq + 1);
 
-    const scale = generateColorScale(hex, {
+    const scale = gudColorScale(hex, {
       steps: [step],
       rangeMin: stepsMin,
       rangeMax: stepsMax,

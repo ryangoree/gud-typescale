@@ -1,6 +1,6 @@
 import { writeFileSync } from 'node:fs';
 import { command } from '@gud/cli';
-import { generateColorPaletteCss, generateColorPalettes } from '#src/lib';
+import { gudColorPaletteCss, gudColorPalettes } from '#src/lib';
 
 export default command({
   description: 'Generate a CSS color palette from one or more base colors.',
@@ -76,8 +76,8 @@ export default command({
       }),
     );
 
-    const css = generateColorPaletteCss({
-      palettes: generateColorPalettes(colors, {
+    const css = gudColorPaletteCss({
+      palettes: gudColorPalettes(colors, {
         steps: steps.map(Number),
         lightnessRange: [lightnessMin, lightnessMax],
         chromaRange: [chromaMin, chromaMax],

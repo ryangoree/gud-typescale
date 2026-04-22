@@ -2,7 +2,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, relative, resolve } from 'node:path';
 import { command } from '@gud/cli';
 import { unitChoices } from '#src/cli/customTypes';
-import { generatePreviewHtml, parseColorPaletteCss, parseTypeScaleCss } from '#src/lib';
+import { gudPreviewHtml, parseColorPaletteCss, parseTypeScaleCss } from '#src/lib';
 
 declare module '@gud/cli' {
   interface CustomOptionTypes {
@@ -81,11 +81,10 @@ export default command({
     const { typeScale } = parseTypeScaleCss(typeScaleCss, { prefix, tailwind });
 
     let palettes: Record<string, Record<number, string>> = {};
-    let colorSteps: number[] = [];
 
     if (colorPalettePath) {
       const colorPaletteCss = readFileSync(colorPalettePath, 'utf8');
-      ({ palettes, colorSteps } = parseColorPaletteCss(colorPaletteCss, { prefix }));
+      ({ palettes } = parseColorPaletteCss(colorPaletteCss, { prefix }));
     }
 
     const linked = mode === 'linked';
@@ -99,10 +98,9 @@ export default command({
         ]
       : [];
 
-    const html = generatePreviewHtml({
+    const html = gudPreviewHtml({
       typeScale,
       palettes,
-      colorSteps,
       prefix,
       tailwind,
       previewUnit,

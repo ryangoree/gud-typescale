@@ -1,5 +1,5 @@
 {
-  "include": ["./*.ts", "src"],
+  "include": ["./*.ts", "src", ".local/**/*.ts"],
   "compilerOptions": {
     // Environment (affects what's available in source code)
     "lib": ["esnext"],

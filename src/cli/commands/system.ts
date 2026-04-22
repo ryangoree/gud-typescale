@@ -3,9 +3,9 @@ import { command } from '@gud/cli';
 import { roundDirectionChoices, unitChoices } from '#src/cli/customTypes';
 import {
   DEFAULT_TYPE_SCALE_HIERARCHY,
-  generateColorPaletteCss,
-  generateColorPalettes,
-  generatePreviewHtml,
+  gudColorPaletteCss,
+  gudColorPalettes,
+  gudPreviewHtml,
   gudTypeScale,
   gudTypeScaleCss,
   rounder,
@@ -212,7 +212,7 @@ export default command({
 
     const palettes =
       parsedColors !== undefined
-        ? generateColorPalettes(parsedColors, {
+        ? gudColorPalettes(parsedColors, {
             steps: parsedColorSteps,
             lightnessRange: [lightnessMin, lightnessMax],
             chromaRange: [chromaMin, chromaMax],
@@ -223,17 +223,16 @@ export default command({
     console.log(`✅ Type scale CSS saved to ${typeScaleOutput}`);
 
     if (palettes !== undefined) {
-      writeFileSync(colorOutput, generateColorPaletteCss({ palettes, prefix, tailwind }), 'utf8');
+      writeFileSync(colorOutput, gudColorPaletteCss({ palettes, prefix, tailwind }), 'utf8');
       console.log(`✅ Color palette CSS saved to ${colorOutput}`);
     }
 
     if (preview) {
       writeFileSync(
         previewOutput,
-        generatePreviewHtml({
+        gudPreviewHtml({
           typeScale,
           palettes: palettes ?? {},
-          colorSteps: parsedColorSteps,
           prefix,
           tailwind,
           previewUnit,

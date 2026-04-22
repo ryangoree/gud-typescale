@@ -1,9 +1,8 @@
 import type { TypeScale, TypeScaleUnit } from '#src/lib/typography/typeScale';
 
 export interface PreviewHtmlOptions {
-  typeScale: TypeScale;
-  palettes: Record<string, Record<number, string>>;
-  colorSteps: number[];
+  typeScale?: TypeScale;
+  palettes?: Record<string, Record<number, string>>;
   prefix?: string;
   tailwind?: boolean;
   /** Override the unit used to display font-size and line-height values in the preview. */
@@ -40,10 +39,9 @@ function toDisplayValue(value: string | number, target: TypeScaleUnit, base: num
   return String(value);
 }
 
-export function generatePreviewHtml({
+export function gudPreviewHtml({
   typeScale,
   palettes,
-  colorSteps,
   prefix = '',
   tailwind = false,
   previewUnit,
@@ -51,20 +49,21 @@ export function generatePreviewHtml({
   linked = false,
   cssFiles = [],
 }: PreviewHtmlOptions): string {
-  const hasTypeScale = Object.keys(typeScale).length > 0;
-  const hasPalettes = Object.keys(palettes).length > 0;
+  const hasTypeScale = typeScale && Object.keys(typeScale).length > 0;
+  const hasPalettes = palettes && Object.keys(palettes).length > 0;
 
   const fontSizeVariablePrefix = tailwind ? `text-${prefix}` : `${prefix}font-size-`;
   const lineHeightVariablePrefix = tailwind ? `leading-${prefix}` : `${prefix}line-height-`;
 
-  const typeRows = Object.entries(typeScale)
-    .map(([style, { fontSize, lineHeight }]) => {
-      const fsVar = `--${fontSizeVariablePrefix}${style}`;
-      const lhVar = `--${lineHeightVariablePrefix}${style}`;
-      const utilClass = tailwind ? `.text-${prefix}${style}` : `.${prefix}text-${style}`;
+  const typeRows = hasTypeScale
+    ? Object.entries(typeScale)
+        .map(([style, { fontSize, lineHeight }]) => {
+          const fsVar = `--${fontSizeVariablePrefix}${style}`;
+          const lhVar = `--${lineHeightVariablePrefix}${style}`;
+          const utilClass = tailwind ? `.text-${prefix}${style}` : `.${prefix}text-${style}`;
 
-      if (linked) {
-        return `
+          if (linked) {
+            return `
     <div class="type-row">
       <div class="type-sample" style="font-size: var(${fsVar}); line-height: var(${lhVar})">The quick brown fox jumps over the lazy dog</div>
       <div class="type-meta">
@@ -75,13 +74,13 @@ export function generatePreviewHtml({
         <code class="meta-class" onclick="copyText(this,'${utilClass.slice(1)}')" title="Copy ${utilClass}">${utilClass}</code>
       </div>
     </div>`;
-      }
+          }
 
-      const rawFs = typeof fontSize === 'number' ? `${fontSize}px` : fontSize;
-      const rawLh = typeof lineHeight === 'number' ? `${lineHeight}px` : lineHeight;
-      const fs = previewUnit ? toDisplayValue(rawFs, previewUnit, base) : rawFs;
-      const lh = previewUnit ? toDisplayValue(rawLh, previewUnit, base) : rawLh;
-      return `
+          const rawFs = typeof fontSize === 'number' ? `${fontSize}px` : fontSize;
+          const rawLh = typeof lineHeight === 'number' ? `${lineHeight}px` : lineHeight;
+          const fs = previewUnit ? toDisplayValue(rawFs, previewUnit, base) : rawFs;
+          const lh = previewUnit ? toDisplayValue(rawLh, previewUnit, base) : rawLh;
+          return `
     <div class="type-row">
       <div class="type-sample" style="font-size: ${fs}; line-height: ${lh}">The quick brown fox jumps over the lazy dog</div>
       <div class="type-meta">
@@ -92,8 +91,9 @@ export function generatePreviewHtml({
         <code class="meta-class" onclick="copyText(this,'${utilClass.slice(1)}')" title="Copy ${utilClass}">${utilClass}</code>
       </div>
     </div>`;
-    })
-    .join('\n');
+        })
+        .join('\n')
+    : '';
 
   const typeScaleSection = hasTypeScale
     ? `
@@ -103,39 +103,42 @@ export function generatePreviewHtml({
     </section>`
     : '';
 
-  const paletteSections = Object.entries(palettes)
-    .map(([name, scale]) => {
-      const swatches = colorSteps
-        .map((step) => {
-          const colorVar = `--${prefix}color-${name}-${step}`;
-          if (linked) {
-            return `
+  const paletteSections = hasPalettes
+    ? Object.entries(palettes)
+        .map(([name, scale]) => {
+          const steps = Object.keys(scale);
+          const swatches = steps
+            .map((step) => {
+              const colorVar = `--${prefix}color-${name}-${step}`;
+              if (linked) {
+                return `
           <div class="swatch-cell" onclick="copyVar(this,'${colorVar}')" title="Copy color">
             <div class="swatch-block" style="background: var(${colorVar})"></div>
             <span class="swatch-step">${step}</span>
             <code class="swatch-var">${colorVar}</code>
             <span class="swatch-hex" data-color-var="${colorVar}"></span>
           </div>`;
-          }
-          const hex = scale[step] ?? '';
-          if (!hex) return '';
-          return `
+              }
+              const hex = scale[+step] ?? '';
+              if (!hex) return '';
+              return `
           <div class="swatch-cell" onclick="copyHex(this,'${hex}')" title="Copy ${hex}">
             <div class="swatch-block" style="background: ${hex}"></div>
             <span class="swatch-step">${step}</span>
             <code class="swatch-var">${colorVar}</code>
             <span class="swatch-hex">${hex}</span>
           </div>`;
-        })
-        .join('\n');
-      return `
+            })
+            .join('\n');
+          return `
       <div class="palette">
         <h3>${name}</h3>
         <div class="swatch-row">${swatches}
         </div>
       </div>`;
-    })
-    .join('\n');
+        })
+        .join('\n')
+    : '';
 
   const colorSection = hasPalettes
     ? `

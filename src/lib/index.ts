@@ -2,9 +2,9 @@
 export {
   type ColorPaletteCSSOptions,
   type ColorScaleOptions,
-  gudColorPaletteCss as generateColorPaletteCss,
-  gudColorPalettes as generateColorPalettes,
-  gudColorScale as generateColorScale,
+  gudColorPaletteCss,
+  gudColorPalettes,
+  gudColorScale,
   interpolateOklch,
 } from '#src/lib/colors/colorPaletteGenerator';
 export { toCmyk, toHex, toHsl, toOklab, toOklch, toRgb } from '#src/lib/colors/convert';
@@ -13,7 +13,7 @@ export { type ParsedColor, parseColor } from '#src/lib/colors/parse';
 export type { CMYK, Color, HSL, OKLAB, OKLCH, RGB } from '#src/lib/colors/types';
 
 // Preview
-export { generatePreviewHtml, type PreviewHtmlOptions } from '#src/lib/preview/html';
+export { gudPreviewHtml, type PreviewHtmlOptions } from '#src/lib/preview/html';
 export {
   type ParseColorPaletteCssOptions,
   type ParsedColorPaletteCss,

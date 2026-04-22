@@ -21,6 +21,6 @@
     "editor.defaultFormatter": "biomejs.biome"
   },
   "prettier.configPath": ".prettierrc.cjs",
-  "js/ts.preferences.autoImportFileExcludePatterns": ["src/index.*", "src/exports*"],
+  "js/ts.preferences.autoImportFileExcludePatterns": ["**/src/index.*", "**/exports/**"],
   "rewrap.wrappingColumn": 100
 }
